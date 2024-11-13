@@ -1,6 +1,6 @@
 # Tweeki, a Bootstrap based skin for MediaWiki
 
-This is custom tune of [original Tweeki skin](https://github.com/thaider/Tweeki) for [Veda.Wiki](https://veda.wiki/) project.
+This is custom tune of [original Tweeki skin](https://github.com/thaider/Tweeki) for [Veda.Wiki](https://veda.wiki/) project..
 
 Tweeki is a skin for **[MediaWiki](http://mediawiki.org/)** (1.35+) based on
 **[Bootstrap](http://getbootstrap.com/)** (v4.6.2). It tries to implement as
