@@ -1068,6 +1068,7 @@ echo $shorturl;
 
 
  <?php
+/* Old code, 2DELETE. Show ALL categories, doesnt hide the hidden cats
 $title = $this->data['skin']->getTitle();
 $categories = $title->getParentCategories();
 if ($categories) {
@@ -1076,7 +1077,7 @@ $catcnt = count($categories);
 	SpecialPage::getTitleFor( 'Categories' ) . 
 	'">' . 
 	MediaWikiServices::getInstance()->getSpecialPageFactory()->getLocalNameFor('Categories' ) . 
-	':</a></b><br>';
+	':</a>OLD</b><br>';
 
     foreach ( $categories as $cat => $_) {
 	$catcnt--;
@@ -1085,6 +1086,26 @@ $catcnt = count($categories);
 	}
     echo "</div><p></p>";
 }
+*/
+
+$tpldata = $this->getSkin()->getTemplateData();
+$normalcat_data = $this->getSkin()->getTemplateData()['data-portlets']['data-category-normal']['array-items'];
+$normalcat_array = [];
+
+foreach ($normalcat_data as $hd){
+    $normalcat_array[] = $hd['html'];
+    }
+
+if (count( $normalcat_array )){
+    $normal_categories = implode('; ', $normalcat_array);
+    echo '<div id="catlinks2" class="mw-normal-catlinks" data-mw="interface"><b><a href="/' . 
+	SpecialPage::getTitleFor( 'Categories' ) . 
+	'">' . 
+	MediaWikiServices::getInstance()->getSpecialPageFactory()->getLocalNameFor('Categories' ) . 
+	':</a></b><br>';
+echo $normal_categories;
+}
+
 ?>
 
 
