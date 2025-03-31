@@ -159,67 +159,22 @@ class TweekiTemplate extends BaseTemplate {
 
 		call_user_func_array( $skin->getConfig( 'TweekiSkinNavbarRenderer' ), [ $skin ] );
 ?>
-		<main role="main">
-			<div id="mw-page-base"></div>
-			<div id="mw-head-base"></div>
+		<main role="main">ROLE_MAIN
+			<div id="mw-page-base">DIV_mw-page-base</div>
+			<div id="mw-head-base">DIV_mw-head-base</div>
 			<a id="top"></a>
 
-<!-- mobile -->
-			<div id="contentwrapper" 
-<?php 
-if($_SERVER['HTTP_SEC_CH_UA_PLATFORM']==='"Android"'): {
-echo 'style="margin: 0; position: relative; left: -90px;"'; 
-}endif;
-?>
- class="<?php echo $contentclass; ?>">
 
-<div class="row" 
-<?php 
-if($_SERVER['HTTP_SEC_CH_UA_PLATFORM']==='"Android"'): {
-echo 'style="border: 0px solid #f00; position: relative; left:100px; overflow-x: hidden;"';
-}endif;
-?> >DIV_CLASS_ROW
-<!-- TODO: delete DIV_CLASS_ROW -->
-<!-- /mobile -->
-					<div id="maincontentwrapper" class="<?php echo $mainclass; ?>">
+			<div id="contentwrapper" class="<?php echo $contentclass; ?>" style="position: relative; left: 100px; width: 100%; border: 1px solid #000;">DIV_MAIN
+
+				<div class="row">
+					<div id="maincontentwrapper" class="<?php echo $mainclass; ?>" style="position: relative; left: 100px; right:100px; width: 300px; border: 1px solid #000;">DIV_MAINCONTENTWRAPPER
 						<?php if( !$skin->checkEmptiness( 'subnav' ) ) { $skin->renderSubnav( $mainclass ); } ?>
 
 						<!-- content -->
-						<main role="main">
+						<main role="main">XXXXXXXXXXXXXXXXXX<br clear="all">
 <a name="firstHeading"></a>
-<!-- ORIG -->							<!-- ?php $skin->renderContent(); ? -->
-<?php
-// This is xack for reorganization videotable formatting that produces by invoke:Vedeogallery:
-// replace orig. formatting (by 3 videos in line) to new ((by 1 video in line))
-// Only for mobile clients - other receive orig.content..
-ob_start(); // Bufferize output of renderContent()
-$skin->renderContent(); // Run the rendering
-$htmla = ob_get_clean(); // Save to temp var and clean buffer
-
-if ($_SERVER['HTTP_SEC_CH_UA_PLATFORM'] === '"Android"') { 
-    // Find the table with videos and get all <td>s
-    $htmla = preg_replace_callback(
-        '/<table class="video_table".*?<tbody>(.*?)<\/tbody>.*?<\/table>/is',
-        function ($matches) {
-            preg_match_all('/<td.*?>(.*?)<\/td>/is', $matches[1], $tdMatches);
-            // Format new rows - by single <td> in row
-            $newRows = '';
-            foreach ($tdMatches[0] as $td) {
-                $newRows .= '<tr>' . $td . '</tr>';
-            }
-            // Combine back the modified table
-			//TODO: reorg. regexps to save also other params in <table> and return them
-            return '<table class="video_table" border="0" cellpadding="5"><tbody>' . $newRows . '</tbody></table>';
-        },
-        $htmla
-    );
-
-    // Выводим обновленный HTML
-    echo $htmla;
-} else {
-    echo $htmla;
-}
-?>
+							<?php $skin->renderContent(); ?>
 						</main>
 						<!-- /content -->
 					</div>
@@ -853,6 +808,7 @@ if ($_SERVER['HTTP_SEC_CH_UA_PLATFORM'] === '"Android"') {
 	public static function renderNavbar($skin) {
 		$navbar_class = $skin->getMsg( 'tweeki-navbar-class' );
 		if ( $skin->checkVisibility( 'navbar' ) ) { ?>
+<html style="width: 265px; border: 10px solid #f00; ">
 			<header>
 				<nav id="mw-navigation" class="<?php echo $navbar_class; ?>">
 					<div class="<?php echo wfMessage( 'tweeki-container-class' )->plain(); ?>">
@@ -1026,11 +982,6 @@ endforeach;
 
 <?php
 $content = $this->data[ 'bodycontent'];
-/// mobile - NOT WORK
-if($_SERVER['HTTP_SEC_CH_UA_PLATFORM']==='"Android"'):
-$content = preg_replace("/VIDEO_ROWS=3/", "VIDEO_ROWS=1", $content);
-endif;
-/// /mobile
 $content = preg_replace('|\n|','', $content);
 preg_match_all('|<li class="toclevel-(.) tocsection.*?>.*?<span class="toctext">(.*?)</span>|u', $content, $content2);
 
@@ -1089,22 +1040,8 @@ echo $shorturl;
 					<a href="#mw-navigation"><?php $this->msg( 'jumptonavigation' ) ?></a><?php $this->msg( 'comma-separator' ) ?>
 					<a href="#p-search"><?php $this->msg( 'jumptosearch' ) ?></a>
 				</div>
-<!-- mobile -->
-<?php 
-//$this->msg('Platform is ' . $_SERVER['HTTP_SEC_CH_UA_PLATFORM']);
-?>
-<?php if($_SERVER['HTTP_SEC_CH_UA_PLATFORM']==='"Android"'): ?>
-<div style="border: 0px dotted #0f0; width: 300px;">
-<?php endif; ?>
-				<?php $this->html( 'bodycontent' ) ?>
-<?php if($_SERVER['HTTP_SEC_CH_UA_PLATFORM']==='"Android"'): ?>
-</div>
-<?php endif; ?>
-
-<?php 
-//$this->msg('          Platform is ' . $_SERVER['HTTP_SEC_CH_UA_PLATFORM']);
-?>
-<!-- /mobile -->
+				<div class="mobile" style=" width: 260px; float: right;border: 1px solid #000; font-size: 36px;">
+				<?php $this->html( 'bodycontent' ) ?></div>
 				<?php if ( $this->data['printfooter'] ) { ?>
 				<div class="printfooter">
 				<?php $this->html( 'printfooter' ); ?>
