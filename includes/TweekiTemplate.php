@@ -201,13 +201,18 @@ if ($_SERVER['HTTP_SEC_CH_UA_PLATFORM'] === '"Android"') {
         function ($matches) {
             $content = $matches[1];
 
-            // Replace "width:8000px" to "width:300px" inside div styles
+            // Replace "width:8000px" to "width:300px" inside collapsible blocks
             $content = preg_replace(
-                '/style="width:8000px;/',
-                'style="width:300px;',
+                '/style="width:8000px; display: table-cell;/',
+                'style="width:300px; display: table-cell;',
                 $content
             );
-
+			// Bugfix for collapsed block - expanded text was out of display width..
+            $content = preg_replace(
+                '/<div class="mw-collapsible-content">/',
+                '<div class="mw-collapsible-content"; style="width: 300px">',
+                $content
+            );
             // Extract <td>s and reformat rows
             preg_match_all('/<td.*?>(.*?)<\/td>/is', $content, $tdMatches);
 
