@@ -189,37 +189,47 @@ echo 'style="border: 0px solid #f00; position: relative; left:100px; overflow-x:
 <a name="firstHeading"></a>
 <!-- ORIG -->							<!-- ?php $skin->renderContent(); ? -->
 <?php
-// This is xack for reorganization videotable formatting that produces by invoke:Vedeogallery:
-// replace orig. formatting (by 3 videos in line) to new ((by 1 video in line))
-// Only for mobile clients - other receive orig.content..
-ob_start(); // Bufferize output of renderContent()
-$skin->renderContent(); // Run the rendering
-$htmla = ob_get_clean(); // Save to temp var and clean buffer
+// Bufferize output of renderContent()
+ob_start();
+$skin->renderContent(); // Render the page content
+$htmla = ob_get_clean(); // Save rendered content in a variable
 
 if ($_SERVER['HTTP_SEC_CH_UA_PLATFORM'] === '"Android"') { 
     // Find the table with videos and get all <td>s
     $htmla = preg_replace_callback(
         '/<table class="video_table".*?<tbody>(.*?)<\/tbody>.*?<\/table>/is',
         function ($matches) {
-            preg_match_all('/<td.*?>(.*?)<\/td>/is', $matches[1], $tdMatches);
-            // Format new rows - by single <td> in row
+            $content = $matches[1];
+
+            // Replace "width:8000px" to "width:300px" inside div styles
+            $content = preg_replace(
+                '/style="width:8000px;/',
+                'style="width:300px;',
+                $content
+            );
+
+            // Extract <td>s and reformat rows
+            preg_match_all('/<td.*?>(.*?)<\/td>/is', $content, $tdMatches);
+
             $newRows = '';
             foreach ($tdMatches[0] as $td) {
                 $newRows .= '<tr>' . $td . '</tr>';
             }
+
             // Combine back the modified table
-			//TODO: reorg. regexps to save also other params in <table> and return them
             return '<table class="video_table" border="0" cellpadding="5"><tbody>' . $newRows . '</tbody></table>';
         },
         $htmla
     );
 
-    // Выводим обновленный HTML
+    // Output modified HTML
     echo $htmla;
 } else {
+    // Output original HTML for non-mobile clients
     echo $htmla;
 }
 ?>
+
 						</main>
 						<!-- /content -->
 					</div>
